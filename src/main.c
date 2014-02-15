@@ -40,6 +40,8 @@ enum controls {
     KEY_INC_AREA,
     KEY_DEC_AREA,
     KEY_CLOSE_WIN,
+    KEY_NEXT_TAG,
+    KEY_PREV_TAG,
     KEY_SWITCH_T1 = 100,
     KEY_TOGGLE_T1 = 200
 };
@@ -478,8 +480,8 @@ void RegisterHotkeys(HWND hwnd)
     char key[2];
     int i;
 
-    RegisterHotKey(hwnd, KEY_SELECT_UP, modkeys, 'K');
-    RegisterHotKey(hwnd, KEY_SELECT_DOWN, modkeys, 'J');
+    RegisterHotKey(hwnd, KEY_SELECT_UP, modkeys, 'P');
+    RegisterHotKey(hwnd, KEY_SELECT_DOWN, modkeys, 'N');
     RegisterHotKey(hwnd, KEY_MOVE_MAIN, modkeys, VK_RETURN);
     RegisterHotKey(hwnd, KEY_EXIT, modkeys, VK_ESCAPE);
     RegisterHotKey(hwnd, KEY_MARGIN_LEFT, modkeys, 'H');
@@ -487,14 +489,16 @@ void RegisterHotkeys(HWND hwnd)
     RegisterHotKey(hwnd, KEY_IGNORE, modkeys, 'I');
     RegisterHotKey(hwnd, KEY_MOUSE_LOCK, modkeys, 'U');
     RegisterHotKey(hwnd, KEY_TILING_MODE, modkeys, VK_SPACE);
-    RegisterHotKey(hwnd, KEY_MOVE_UP, modkeys | MOD_SHIFT, 'K');
-    RegisterHotKey(hwnd, KEY_MOVE_DOWN, modkeys | MOD_SHIFT, 'J');
+    RegisterHotKey(hwnd, KEY_MOVE_UP, modkeys | MOD_SHIFT, 'P');
+    RegisterHotKey(hwnd, KEY_MOVE_DOWN, modkeys | MOD_SHIFT, 'N');
     RegisterHotKey(hwnd, KEY_DISP_CLASS, modkeys, 'Y');
     RegisterHotKey(hwnd, KEY_TILE, modkeys, 'O');
     RegisterHotKey(hwnd, KEY_UNTILE, modkeys, 'P');
-    RegisterHotKey(hwnd, KEY_INC_AREA, modkeys, 'Z');
-    RegisterHotKey(hwnd, KEY_DEC_AREA, modkeys, 'X');
+    RegisterHotKey(hwnd, KEY_INC_AREA, modkeys | MOD_SHIFT, 'H');
+    RegisterHotKey(hwnd, KEY_DEC_AREA, modkeys | MOD_SHIFT, 'L');
     RegisterHotKey(hwnd, KEY_CLOSE_WIN, modkeys, 'C');
+    RegisterHotKey(hwnd, KEY_PREV_TAG, modkeys, VK_OEM_COMMA);
+    RegisterHotKey(hwnd, KEY_NEXT_TAG, modkeys, VK_OEM_PERIOD);
 
     // Tags
     for (i = 0; i < TAGS; i++) {
@@ -583,6 +587,22 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
             switch (wParam)
                 {
+                case KEY_PREV_TAG:
+                    if (current_tag > 0) {
+                        MinimizeTag(current_tag);
+                        --current_tag;
+                        ArrangeWindows();
+                    }
+                    break;
+
+                case KEY_NEXT_TAG:
+                    if (current_tag < TAGS) {
+                        MinimizeTag(current_tag);
+                        ++current_tag;
+                        ArrangeWindows();
+                    }
+                    break;
+
                 case KEY_SELECT_UP:
                     if (current) {
                         tags[current_tag].current_window = GetNextNode();
@@ -758,7 +778,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     LPWSTR *argv = NULL;
     int argc;
     int i;
-    unsigned short tilingMode;
+    /* unsigned short tilingMode; */
 
     argv = CommandLineToArgvW(GetCommandLineW(), &argc);
 
@@ -804,7 +824,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
                         }
                 }
             } else if (!strcmp(arg, "-t")) {
-                tilingMode = atoi(nextarg);
+                /* tilingMode = atoi(nextarg); */
             } else if (!strcmp(arg, "-left")) {
                 screen_x = atoi(nextarg);
             } else if (!strcmp(arg, "-top")) {
