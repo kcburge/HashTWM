@@ -1,5 +1,7 @@
 HashTWM
 ===
+NOTE: I cloned this for the purpose of making windows act a little more like
+my Awesome WM configuration on Linux (which I also made a little more Emacs friendly).
 
 A dwm-like automatic tiling window manager for Microsoft Windows, download at https://github.com/ZaneA/HashTWM
 
