@@ -18,3 +18,4 @@ build/
 *.opensdf
 *.obj
 *.filters
+*.exe
